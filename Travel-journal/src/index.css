@@ -1,0 +1,100 @@
+/* Base variables and typography */
+:root {
+  --bg: #ffffff;
+  --text: #111827;
+  --accent: #F55A5A;
+  --muted: #6b7280;
+
+  /* Use Inter (loaded from index.html) and fallbacks */
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--text);
+  background-color: var(--bg);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Center the app in the viewport */
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;      /* vertical center */
+  justify-content: center;  /* horizontal center */
+}
+
+/* Header layout and appearance */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  /* wider horizontal padding and responsive width so the red band stretches more */
+  padding: 20px 40px;
+  background-color: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  /* make the header stretch wider than its container but stay centered */
+  width: min(1100px, 96vw);
+  margin: 16px auto 0; /* add a little space at the top */
+}
+
+.site-header img {
+  width: 72px; /* size the globe */
+  height: auto;
+  display: block;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* Utility center class (keeps working) */
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Links, buttons and other small utilities */
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: none;
+}
+
+a:hover { color: #535bf2; }
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover { border-color: #646cff; }
+
+@media (prefers-color-scheme: light) {
+  :root { color: #213547; background-color: #ffffff; }
+  button { background-color: #f9f9f9; color: #111; }
+}
