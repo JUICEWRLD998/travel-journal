@@ -1,4 +1,7 @@
-/* Base variables and typography */
+/* ========================================
+   BASE VARIABLES & TYPOGRAPHY
+   ======================================== */
+
 :root {
   --bg: #ffffff;
   --text: #111827;
@@ -14,55 +17,68 @@
   color: var(--text);
   background-color: var(--bg);
 
+  /* Font smoothing for better readability */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Reset and prevent horizontal overflow on mobile */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden; /* Prevent horizontal scrolling (critical for mobile) */
+  width: 100%;
+  max-width: 100vw; /* Ensure no content exceeds viewport width */
 }
 
-/* Center the app in the viewport */
+/* Center the app - optimized for mobile and desktop */
 body {
   min-width: 320px;
   min-height: 100vh;
+  /* Desktop: centered flex layout (no scrollbar) */
   display: flex;
   align-items: center;      /* vertical center */
   justify-content: center;  /* horizontal center */
-  padding: 16px; /* prevent edge-to-edge on mobile */
+  padding: 16px; /* Prevent edge-to-edge on mobile */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-/* Header layout and appearance */
+/* ========================================
+   HEADER COMPONENT
+   ======================================== */
+
 .site-header {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  /* slightly reduced horizontal padding for better desktop scale */
-  padding: 14px 28px;
+  padding: 14px 24px; /* Reduced padding for mobile safety */
   background-color: var(--accent);
   color: #fff;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  /* make the header stretch wider than its container but stay centered */
-  width: min(1000px, 96vw);
-  margin: 16px auto 0; /* add a little space at the top */
+  /* Responsive width that never exceeds viewport */
+  width: 100%;
+  max-width: min(1000px, calc(100vw - 24px)); /* Subtract padding to prevent overflow */
+  margin: 0 auto 16px; /* Center and add bottom spacing */
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .site-header img {
-  width: 56px; /* slightly smaller globe for better mobile/desktop balance */
+  width: 52px; /* Slightly smaller for mobile safety */
   height: auto;
   display: block;
+  flex-shrink: 0; /* Prevent image from shrinking */
 }
 
 .site-header h1 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.3rem; /* Slightly smaller base size */
   font-weight: 600;
+  word-break: break-word; /* Prevent long titles from overflowing */
 }
 
 /* Utility center class (keeps working) */
@@ -101,175 +117,248 @@ button:hover { border-color: #646cff; }
 }
 
 /* ========================================
-   Journal entry (media stack + meta)
+   JOURNAL ENTRY COMPONENT
    ======================================== */
 
 .journal-entry {
   display: flex;
-  gap: 18px;
+  gap: 16px;
   align-items: flex-start;
   width: 100%;
-  max-width: 800px;
-  margin: 20px 0 40px; /* increased bottom spacing between entries */
-  padding: 0 4px; /* tiny padding for mobile tap targets */
+  max-width: min(800px, calc(100vw - 24px)); /* Never exceed viewport */
+  margin: 0 auto 32px; /* Center entries and space them out */
+  padding: 0; /* Remove extra padding that causes overflow */
+  box-sizing: border-box;
 }
 
+/* Image carousel container */
 .journal-entry .media {
   position: relative;
-  width: clamp(260px, 35%, 340px);
-  height: clamp(180px, 24vw, 220px);
+  /* Responsive sizing with safe clamp values for mobile */
+  width: clamp(200px, 40%, 340px); /* Reduced min-width for smaller phones */
+  height: clamp(140px, 28vw, 220px);
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  flex: 0 0 clamp(260px, 35%, 340px);
+  flex: 0 0 clamp(200px, 40%, 340px);
+  flex-shrink: 0; /* Prevent shrinking below min-width */
 }
 
+/* Individual carousel images */
 .journal-entry .media img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Maintain aspect ratio and fill container */
   display: block;
   opacity: 0;
   transform: translateX(100%);
-  animation: slide 18s linear infinite;
+  animation: slide 18s linear infinite; /* 18-second rotation */
 }
 
-/* stagger animations for each stacked image */
+/* Stagger animation delays for each image in the carousel */
 .journal-entry .media img:nth-child(1) { animation-delay: 0s; }
-.journal-entry .media img:nth-child(2) { animation-delay: 4s; }
-.journal-entry .media img:nth-child(3) { animation-delay: 8s; }
-.journal-entry .media img:nth-child(4) { animation-delay: 12s; }
-.journal-entry .media img:nth-child(5) { animation-delay: 16s; }
+.journal-entry .media img:nth-child(2) { animation-delay: 3.6s; }  /* 18s / 5 images */
+.journal-entry .media img:nth-child(3) { animation-delay: 7.2s; }
+.journal-entry .media img:nth-child(4) { animation-delay: 10.8s; }
+.journal-entry .media img:nth-child(5) { animation-delay: 14.4s; }
 
+/* Keyframe animation: slides images in from right, holds, then slides out to left */
 @keyframes slide {
-  0%   { opacity: 0; transform: translateX(100%); }
-  4%   { opacity: 1; transform: translateX(0%); }
-  24%  { opacity: 1; transform: translateX(0%); }
-  28%  { opacity: 0; transform: translateX(-30%); }
-  100% { opacity: 0; transform: translateX(-100%); }
+  0%   { opacity: 0; transform: translateX(100%); }   /* Start: off-screen right */
+  4%   { opacity: 1; transform: translateX(0%); }     /* Fade in and slide to center */
+  24%  { opacity: 1; transform: translateX(0%); }     /* Hold in center */
+  28%  { opacity: 0; transform: translateX(-30%); }   /* Fade out slightly left */
+  100% { opacity: 0; transform: translateX(-100%); }  /* End: off-screen left */
 }
 
+/* Entry metadata container */
 .journal-entry .meta {
   display: flex;
-  flex-direction: column; /* stack meta-row and title */
+  flex-direction: column;
   gap: 8px;
-  flex: 1 1 auto; /* allow meta to take remaining space */
+  flex: 1 1 auto; /* Take remaining space */
+  min-width: 0; /* Allow text to wrap/shrink properly */
+  overflow-wrap: break-word; /* Prevent long words from overflowing */
 }
 
+/* Top row: location badge and map link */
 .journal-entry .meta-row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap; /* Allow wrapping on very small screens */
 }
 
+/* Entry title */
 .journal-entry .title {
-  display: flex; /* can contain flex children if needed */
+  display: flex;
   align-items: center;
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 1.25rem; /* Slightly smaller base for mobile */
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
+  word-break: break-word; /* Prevent overflow on long titles */
 }
 
-/* Date and description styling */
+/* Date styling */
 .journal-entry .date {
   margin: 4px 0 0 0;
-  
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Smaller on mobile */
+  word-break: break-word;
 }
 
+/* Description text */
 .journal-entry .description {
   margin: 12px 0 0 0;
   color: rgba(0,0,0,0.75);
-  line-height: 1.65;
-  font-size: 0.96rem;
-  max-width: 520px;
+  line-height: 1.6;
+  font-size: 0.9rem; /* Reduced for mobile readability */
+  max-width: 100%; /* Allow full width on mobile */
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
+/* Location badge */
 .journal-entry .location {
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   letter-spacing: 0.02em;
+  white-space: nowrap; /* Keep emoji and text together */
 }
 
+/* Google Maps link */
 .journal-entry .map-link {
   color: var(--accent);
   text-decoration: underline;
   font-weight: 600;
+  font-size: 0.85rem; /* Smaller for mobile */
+  white-space: nowrap; /* Prevent awkward line breaks */
 }
 
 .journal-entry .map-link:hover {
-  opacity: 0.95;
+  opacity: 0.85; /* Subtle hover effect */
 }
 
+/* ========================================
+   MOBILE RESPONSIVE (≤640px)
+   Optimized for iPhone and small Android devices
+   ======================================== */
+
 @media (max-width: 640px) {
-  .site-header {
-    padding: 12px 20px;
-    gap: 10px;
-    margin: 8px auto 0;
+  /* Switch to block layout on mobile to prevent cutting */
+  body {
+    display: block; /* Override flex centering for mobile */
+    padding: 8px;
   }
-  .site-header img { width: 48px; }
-  .site-header h1 { font-size: 1.25rem; }
+
+  /* Compact header for mobile */
+  .site-header {
+    padding: 10px 16px;
+    gap: 8px;
+    margin: 0 auto 12px;
+    max-width: calc(100vw - 16px); /* Ensure no overflow */
+  }
+  .site-header img { 
+    width: 44px; /* Smaller globe icon */
+  }
+  .site-header h1 { 
+    font-size: 1.15rem; /* Smaller title */
+  }
   
+  /* Stack layout: image above content */
   .journal-entry {
     flex-direction: column;
     align-items: stretch;
-    gap: 16px;
-    margin: 16px 0 36px;
+    gap: 14px;
+    margin: 0 auto 28px;
+    max-width: calc(100vw - 16px); /* Critical: prevent overflow */
   }
+  
+  /* Full-width images on mobile */
   .journal-entry .media {
     width: 100%;
-    height: 200px;
+    height: 180px; /* Fixed height for consistency */
     flex: none;
   }
-  /* stack meta on small screens */
+  
+  /* Stack meta vertically */
   .journal-entry .meta {
     flex-direction: column;
     align-items: flex-start;
   }
-  .journal-entry .title { font-size: 1.25rem; }
-  .journal-entry .location { font-size: 1.05rem; }
-  .journal-entry .date { font-size: 0.875rem; }
+  
+  /* Responsive text sizes for mobile readability */
+  .journal-entry .title { font-size: 1.2rem; }
+  .journal-entry .location { font-size: 1.0rem; }
+  .journal-entry .date { font-size: 0.825rem; }
   .journal-entry .description { 
-    font-size: 0.925rem; 
-    line-height: 1.6;
+    font-size: 0.875rem; 
+    line-height: 1.55;
+    max-width: 100%; /* Allow full width */
+  }
+  .journal-entry .map-link {
+    font-size: 0.8rem;
+  }
+  
+  /* Allow meta-row to wrap on very small screens */
+  .journal-entry .meta-row {
+    gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
-/* Larger-desktop tweaks: give more breathing room but keep content narrower */
+/* ========================================
+   LARGE DESKTOP (≥1200px)
+   Enhanced spacing and sizing for wide screens
+   ======================================== */
+
 @media (min-width: 1200px) {
+  /* More breathing room on large displays */
   body {
-    padding: 48px 24px;
+    padding: 40px 24px;
+    /* Flex centering already applied in base styles */
   }
+  
   #root {
     max-width: 1000px;
   }
+  
+  /* Larger header on desktop */
   .site-header { 
     padding: 16px 36px;
     gap: 14px;
   }
-  .site-header img { width: 68px; }
-  .site-header h1 { font-size: 1.5rem; }
+  .site-header img { width: 64px; }
+  .site-header h1 { font-size: 1.45rem; }
   
+  /* Expanded entry layout */
   .journal-entry {
     max-width: 880px;
     gap: 24px;
   }
+  
+  /* Larger images on desktop */
   .journal-entry .media { 
     width: 380px; 
     flex: 0 0 380px; 
     height: 250px; 
   }
-  .journal-entry .title { font-size: 1.4rem; }
-  .journal-entry .location { font-size: 1.15rem; }
+  
+  /* Enhanced typography for desktop */
+  .journal-entry .title { font-size: 1.35rem; }
+  .journal-entry .location { font-size: 1.12rem; }
+  .journal-entry .date { font-size: 0.9rem; }
   .journal-entry .description { 
-    font-size: 1.0rem; 
+    font-size: 0.98rem; 
     max-width: 560px; 
-    line-height: 1.7;
+    line-height: 1.68;
+  }
+  .journal-entry .map-link {
+    font-size: 0.88rem;
   }
 }
