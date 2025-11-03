@@ -1,0 +1,12 @@
+{
+  "name": "travel-journal-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workspace helper package.json to forward npm scripts to the inner project folder",
+  "scripts": {
+    "dev": "npm --prefix ./Travel-journal run dev",
+    "install-inner": "npm --prefix ./Travel-journal install",
+    "start": "npm --prefix ./Travel-journal run dev",
+    "build": "npm --prefix ./Travel-journal run build"
+  }
+}
